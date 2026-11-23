@@ -15,6 +15,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { Cartoon } from "./cartoon";
+import { ColorPalettes } from "./color-palettes";
 import { useLocal, download } from "../hooks/use-local";
 export type Character = {
   id: string;
@@ -29,6 +30,8 @@ export type Character = {
   goals: string;
   fears: string;
   notes: string;
+  paletteId?: string;
+  signatureColor?: string;
 };
 export type Project = { id: string; name: string; type: string; color: string; date: string };
 export const initialCharacters: Character[] = [
@@ -183,7 +186,11 @@ export function CharacterWorkspace({
                   {f === "personality"
                     ? "Personality type"
                     : f.charAt(0).toUpperCase() + f.slice(1)}
-                  <input aria-label={f} value={selected[f]} onChange={(e) => update(f, e.target.value)} />
+                  <input
+                    aria-label={f}
+                    value={selected[f]}
+                    onChange={(e) => update(f, e.target.value)}
+                  />
                 </label>
               ))}
             </div>
@@ -192,7 +199,8 @@ export function CharacterWorkspace({
               {(["traits", "goals", "fears", "notes"] as const).map((f) => (
                 <label key={f}>
                   {f.charAt(0).toUpperCase() + f.slice(1)}
-                  <textarea aria-label={f}
+                  <textarea
+                    aria-label={f}
                     value={selected[f]}
                     onChange={(e) => update(f, e.target.value)}
                     rows={4}
@@ -209,11 +217,16 @@ export function CharacterWorkspace({
               <Cartoon kind={selected.species === "Rabbit" ? "rabbit" : "cat"} />
               <div>
                 <h3>Signature palette</h3>
-                <div className="swatches">
-                  {["#292920", "#fffdf8", "#edbd55", "#ca795c"].map((c) => (
-                    <span key={c} style={{ background: c }} />
-                  ))}
-                </div>
+                <ColorPalettes
+                  paletteId={selected.paletteId || "classic"}
+                  onPaletteChange={(id) => update("paletteId", id)}
+                  color={selected.signatureColor || "#292920"}
+                  onColorChange={(hex) => update("signatureColor", hex)}
+                />
+                <p className="palette-help">
+                  Choose a palette and a signature color for this character. Both save with their
+                  profile; sample artwork stays unchanged.
+                </p>
                 <p>
                   This is an illustrative sample design. Import your own artwork in the Asset
                   Library.
@@ -490,7 +503,8 @@ export function ComicWorkspace({ notify }: { notify: (s: string) => void }) {
             <>
               <label>
                 Speech bubble
-                <textarea aria-label="Speech bubble"
+                <textarea
+                  aria-label="Speech bubble"
                   rows={3}
                   value={panel.text}
                   onChange={(e) => patch("text", e.target.value)}
@@ -498,7 +512,11 @@ export function ComicWorkspace({ notify }: { notify: (s: string) => void }) {
               </label>
               <label>
                 Narration
-                <input aria-label="Narration" value={panel.caption} onChange={(e) => patch("caption", e.target.value)} />
+                <input
+                  aria-label="Narration"
+                  value={panel.caption}
+                  onChange={(e) => patch("caption", e.target.value)}
+                />
               </label>
               <label>
                 Sample character
@@ -675,7 +693,8 @@ export function AnimationWorkspace() {
             type="range"
             min="0"
             max="65"
-            aria-label="Bounce amount" value={bounce}
+            aria-label="Bounce amount"
+            value={bounce}
             onChange={(e) => setBounce(+e.target.value)}
           />
           {bounce}%
@@ -733,7 +752,8 @@ export function SceneWorkspace() {
             type="range"
             min="10"
             max="100"
-            aria-label="Lighting" value={light}
+            aria-label="Lighting"
+            value={light}
             onChange={(e) => setLight(+e.target.value)}
           />
         </label>
@@ -742,7 +762,8 @@ export function SceneWorkspace() {
           <label className="checkbox-label" key={p}>
             <input
               type="checkbox"
-              aria-label={p} checked={props.includes(p)}
+              aria-label={p}
+              checked={props.includes(p)}
               onChange={() =>
                 setProps(props.includes(p) ? props.filter((v) => v !== p) : [...props, p])
               }
@@ -751,7 +772,12 @@ export function SceneWorkspace() {
           </label>
         ))}
         <label className="checkbox-label">
-          <input type="checkbox" aria-label="Perspective guides" checked={guides} onChange={() => setGuides(!guides)} />
+          <input
+            type="checkbox"
+            aria-label="Perspective guides"
+            checked={guides}
+            onChange={() => setGuides(!guides)}
+          />
           Perspective guides
         </label>
         <p className="muted">
@@ -775,7 +801,12 @@ export function VoiceWorkspace({ notify }: { notify: (s: string) => void }) {
         <p className="muted">Write dialogue, explore a voice direction and prepare your script.</p>
         <label>
           Dialogue script
-          <textarea aria-label="Dialogue script" rows={12} value={script} onChange={(e) => setScript(e.target.value)} />
+          <textarea
+            aria-label="Dialogue script"
+            rows={12}
+            value={script}
+            onChange={(e) => setScript(e.target.value)}
+          />
         </label>
         <button
           className="button"
@@ -857,7 +888,8 @@ export function AssetWorkspace({ notify }: { notify: (s: string) => void }) {
         <label className="button primary">
           <Upload size={16} /> Import images
           <input
-            aria-label="Import images" type="file"
+            aria-label="Import images"
+            type="file"
             accept="image/*"
             multiple
             hidden

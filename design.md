@@ -10,3 +10,6 @@ Fraunces expressive display serif + DM Sans body and controls.
 Dashboard, Sketch Studio, Character Creator, Story Studio, Comic Creator, Rubber Hose Lab, Animation Studio, Scene Builder, Voice & Dialogue, Asset Library, Project Manager. Shared components in web/components; page composition in web/pages/index.tsx. Local persistent state, no backend routes needed for approved prototype.
 ## Prototype boundaries
 Browser-local saving. Real drawing and PNG export, character profiles, story writing, comic panel editing and reordering, asset imports. Illustrative animation controls. Explicitly labeled non-live AI and voice previews. No login or cloud sync.
+
+## Artist palettes
+Shared Classic, Neutral and Pastel palettes in Sketch Studio and character Visuals. Each set contains eight named swatches with hex codes and a selected-color indicator. Neutral mixes ivory/oat/sand/taupe/stone/cocoa/slate/charcoal; Pastel includes blush/peach/butter/mint/sky/lilac/rose/seafoam. Sketch palette and ink persist locally; each character stores their palette ID and signature color in their profile/export. Sample illustration is not recolored.

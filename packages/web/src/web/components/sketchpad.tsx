@@ -17,6 +17,7 @@ import {
   PaintBucket,
 } from "lucide-react";
 import { useLocal } from "../hooks/use-local";
+import { ColorPalettes } from "./color-palettes";
 type Point = { x: number; y: number };
 type Stroke = { points: Point[]; color: string; width: number; tool: string; layer: number };
 export function Sketchpad({ notify }: { notify: (s: string) => void }) {
@@ -27,7 +28,8 @@ export function Sketchpad({ notify }: { notify: (s: string) => void }) {
   ]);
   const [layer, setLayer] = useState(0);
   const [tool, setTool] = useState("pencil");
-  const [color, setColor] = useState("#292920");
+  const [color, setColor] = useLocal("heather-sketch-color", "#292920");
+  const [paletteId, setPaletteId] = useLocal("heather-sketch-palette", "classic");
   const [width, setWidth] = useState(4);
   const [zoom, setZoom] = useState(100);
   const [redo, setRedo] = useState<Stroke[]>([]);
@@ -163,7 +165,7 @@ export function Sketchpad({ notify }: { notify: (s: string) => void }) {
         </div>
         <div className="canvas-viewport">
           <canvas
- aria-label="Drawing canvas"
+            aria-label="Drawing canvas"
             ref={canvas}
             width={1200}
             height={800}
@@ -248,7 +250,8 @@ export function Sketchpad({ notify }: { notify: (s: string) => void }) {
         <label>
           Brush size <b>{width}px</b>
           <input
-            aria-label="Brush size" type="range"
+            aria-label="Brush size"
+            type="range"
             min="1"
             max="30"
             value={width}
@@ -257,18 +260,19 @@ export function Sketchpad({ notify }: { notify: (s: string) => void }) {
         </label>
         <label>
           Ink color
-          <input aria-label="Ink color" type="color" value={color} onChange={(e) => setColor(e.target.value)} />
+          <input
+            aria-label="Ink color"
+            type="color"
+            value={color}
+            onChange={(e) => setColor(e.target.value)}
+          />
         </label>
-        <div className="swatches">
-          {["#292920", "#ca795c", "#edbd55", "#7e9279", "#819bb5", "#ffffff"].map((c) => (
-            <button
-              aria-label={`Use ${c}`}
-              style={{ background: c }}
-              key={c}
-              onClick={() => setColor(c)}
-            />
-          ))}
-        </div>
+        <ColorPalettes
+          paletteId={paletteId}
+          onPaletteChange={setPaletteId}
+          color={color}
+          onColorChange={setColor}
+        />
         <hr />
         <div className="section-heading">
           <h3>Layers</h3>
